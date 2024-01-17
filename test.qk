@@ -1,0 +1,12 @@
+import std
+
+type MyType {
+    pub foo: int
+    pub bar: string
+
+    pub static ez := 52.44
+}
+
+pub fn main(args: []string) void {
+    std::println("Hello, World")
+}
