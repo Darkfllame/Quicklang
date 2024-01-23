@@ -1,0 +1,22 @@
+import std
+
+pub fn main(args: []string) void {
+  myObject := MyType::new()
+  std::print("object: $(myObject)")
+}
+
+type MyType {
+  pub var foo: int
+  pub bar: string
+  somePrivate: string
+
+  static staticString := "Hello, World, this should be private !"
+
+  pub fn new() MyType {
+    return {
+      .foo = 5,
+      .bar = staticString.clone(),
+      .somePrivate = "Hey ?!!!!".clone(),
+    } as MyType
+  }
+}
