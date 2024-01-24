@@ -1,17 +1,31 @@
 import std
+use std::loadtime
+use std::string
 
 pub fn main(args: []string) void {
   myObject := MyType::new()
   std::print("object: $(myObject)")
+
   myObjectCopy := std::create(MyType)
   $myObjectCopy = myObject
-  something(&myObjectCopy)
+
+  myObjectCopy.something()
   std::print("object copy: $(myObjectCopy)")
+
   // causes the object to decrease reference count
   // and myObjectCopy to be not reusable
   _ = myObjectCopy
 }
 
+// here the definition for the builtin tag "extends"
+tag extends(object: loadtime::FnDecl, T: loadtime::Type) {
+  loadtime::AddMethod(T, object)
+
+  // not in the builtin declaration
+  std::print("$(T) has been extended with $(object)")
+}
+
+#extends MyType
 fn something(obj: &MyType) void {
   obj.foo = 10
 }
@@ -24,9 +38,13 @@ type MyType {
 
   static staticString := "Hello, World, this should be private !"
 
+  // tag to prevent std::Cloneable default new() function
+  #overwrite
   pub fn new() MyType {
     return {
       .foo = 5,
+      // by default, when moving objects, the interpreter will try to call
+      // a method clone(), which is the std::string type
       .bar = staticString,
       .somePrivate = "Hey ?!!!!",
     } as MyType
