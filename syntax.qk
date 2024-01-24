@@ -3,8 +3,20 @@ import std
 pub fn main(args: []string) void {
   myObject := MyType::new()
   std::print("object: $(myObject)")
+  myObjectCopy := std::create(MyType)
+  $myObjectCopy = myObject
+  something(&myObjectCopy)
+  std::print("object copy: $(myObjectCopy)")
+  // causes the object to decrease reference count
+  // and myObjectCopy to be not reusable
+  _ = myObjectCopy
 }
 
+fn something(obj: &MyType) void {
+  obj.foo = 10
+}
+
+#implement std::Cloneable
 type MyType {
   pub var foo: int
   pub bar: string
@@ -15,8 +27,8 @@ type MyType {
   pub fn new() MyType {
     return {
       .foo = 5,
-      .bar = staticString.clone(),
-      .somePrivate = "Hey ?!!!!".clone(),
+      .bar = staticString,
+      .somePrivate = "Hey ?!!!!",
     } as MyType
   }
 }
